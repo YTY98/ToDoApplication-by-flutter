@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "309115112743",
+    "project_id": "schedulemate-7d0f0",
+    "storage_bucket": "schedulemate-7d0f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309115112743:android:5937d5ad71a7a83b49ed02",
+        "android_client_info": {
+          "package_name": "com.example.schedulemate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkHbQgBaRyDdJuuyFEh-8pHavF5ePtHNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
