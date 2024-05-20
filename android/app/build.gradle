@@ -22,7 +22,10 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+
+
 android {
+    compileSdkVersion 34 // 추가했음
     namespace "com.example.schedulemate1"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion

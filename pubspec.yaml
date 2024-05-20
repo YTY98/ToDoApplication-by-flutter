@@ -60,6 +60,8 @@ dependencies:
   slide_action:
   flutter_slidable:
   flutter_plugin_android_lifecycle:
+  google_maps_flutter:
+  geolocator:
 
 
 
