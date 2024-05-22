@@ -9,4 +9,5 @@ class Schedules extends Table {
   IntColumn get endTime => integer()();     // 종료 시간
   IntColumn get separator => integer()();   // 구분자
   IntColumn get priority => integer()();    // 중요도
+  IntColumn get finish => integer()();
 }

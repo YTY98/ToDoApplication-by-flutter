@@ -26,6 +26,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   int separator = 0;
   String? content;
   int priority = 0; // 중요도 저장 변수
+  int finish = 0;
   bool isTimeSelected = false;
 
   @override
@@ -203,7 +204,8 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
         startTime: startTime!,
         endTime: endTime!,
         separator: separator,
-        priority: priority,  // 중요도 필드 추가
+        priority: priority,
+        finish: finish,
       );
 
       await FirebaseFirestore.instance

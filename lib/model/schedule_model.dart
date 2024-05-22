@@ -7,6 +7,7 @@ class ScheduleModel {
   final int endTime;
   final int separator;
   final int priority;  // 중요도 필드 추가
+  final int finish;
 
   ScheduleModel({
     required this.id,
@@ -16,6 +17,7 @@ class ScheduleModel {
     required this.endTime,
     required this.separator,
     required this.priority,  // 중요도 필드 초기화
+    required this.finish,
   });
 
   ScheduleModel.fromJson({
@@ -26,7 +28,9 @@ class ScheduleModel {
         startTime = json['startTime'],
         endTime = json['endTime'],
         separator = json['separator'],
-        priority = json['priority'];  // JSON에서 중요도 필드 파싱
+        priority = json['priority'],
+        finish = json['finish'];
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -36,7 +40,8 @@ class ScheduleModel {
       'startTime': startTime,
       'endTime': endTime,
       'separator': separator,
-      'priority': priority,  // JSON에 중요도 필드 추가
+      'priority': priority,
+      'finish' : finish,
     };
   }
 
@@ -47,7 +52,8 @@ class ScheduleModel {
     int? startTime,
     int? endTime,
     int? separator,
-    int? priority,  // copyWith에서 중요도 필드 처리
+    int? priority,
+    int? finish,
   }) {
     return ScheduleModel(
       id: id ?? this.id,
@@ -57,6 +63,7 @@ class ScheduleModel {
       endTime: endTime ?? this.endTime,
       separator: separator?? this.separator,
       priority: priority ?? this.priority,  // 중요도 필드 복사
+      finish: finish ?? this.finish,
     );
   }
 }

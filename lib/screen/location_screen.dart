@@ -15,7 +15,7 @@ class LocationScreen extends StatelessWidget {
     circleId: CircleId('choolCheckCircle'),
     center: companyLatLng, // 원의 중심이 되는 위치. LatLng값을 제공합니다.
     fillColor: Colors.blue.withOpacity(0.5), // 원의 색상
-    radius: 100, // 원의 반지름 (미터 단위)
+    radius: 50, // 원의 반지름 (미터 단위)
     strokeColor: Colors.blue, // 원의 테두리 색
     strokeWidth: 1, // 원의 테두리 두께
   );

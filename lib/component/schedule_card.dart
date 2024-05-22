@@ -1,18 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../const/colors.dart';
+import '../model/schedule_model.dart';
 
-class ScheduleCard extends StatelessWidget {
+class ScheduleCard extends StatefulWidget {
+  final String id;
   final int startTime;
   final int endTime;
   final String content;
   final int priority;
+  final int finish;
 
   const ScheduleCard({
+    required this.id,
     required this.startTime,
     required this.endTime,
     required this.content,
     required this.priority,
+    required this.finish,
     Key? key,
   }) : super(key: key);
+
+  @override
+  _ScheduleCardState createState() => _ScheduleCardState();
+}
+
+class _ScheduleCardState extends State<ScheduleCard> {
+  late int finish;
+
+  @override
+  void initState() {
+    super.initState();
+    finish = widget.finish;
+  }
+
+  void _toggleFinish() async {
+    setState(() {
+      finish = finish == 1 ? 0 : 1;
+    });
+
+    // Firestore에서 finish 값을 토글
+    await FirebaseFirestore.instance.collection('schedule').doc(widget.id).update({
+      'finish': finish,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +51,7 @@ class ScheduleCard extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: finish == 1 ? LIGHT_GREY_COLOR : Colors.white,
             border: Border.all(
               width: 1.0,
               color: Colors.grey.shade300,
@@ -34,12 +65,12 @@ class ScheduleCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _Time(
-                    startTime: startTime,
-                    endTime: endTime,
+                    startTime: widget.startTime,
+                    endTime: widget.endTime,
                   ),
                   SizedBox(width: 13.0),
                   _Content(
-                    content: content,
+                    content: widget.content,
                   ),
                   SizedBox(width: 13.0),
                 ],
@@ -53,11 +84,22 @@ class ScheduleCard extends StatelessWidget {
           child: Row(
             children: List.generate(3, (index) {
               return Icon(
-                index < priority ? Icons.star : Icons.star_border,
-                color: index < priority ? Colors.deepOrange : Colors.grey,
+                index < widget.priority ? Icons.star : Icons.star_border,
+                color: index < widget.priority ? Colors.deepOrange : Colors.grey,
                 size: 15.0,
               );
             }),
+          ),
+        ),
+        Positioned(
+          right: 6,
+          top: 11, // 아래쪽으로 위치 변경
+          child: IconButton(
+            icon: Icon(
+              finish == 1 ? Icons.check_box : Icons.check_box_outline_blank, // 체크박스 아이콘
+              color: finish == 1 ? Colors.teal : Colors.grey,
+            ),
+            onPressed: _toggleFinish,
           ),
         ),
       ],
@@ -120,7 +162,7 @@ class _Content extends StatelessWidget {
 }
 
 class ScheduleList extends StatefulWidget {
-  final List<ScheduleCard> schedules;
+  final List<ScheduleModel> schedules;
 
   const ScheduleList({
     required this.schedules,
@@ -132,7 +174,7 @@ class ScheduleList extends StatefulWidget {
 }
 
 class _ScheduleListState extends State<ScheduleList> {
-  late List<ScheduleCard> sortedSchedules;
+  late List<ScheduleModel> sortedSchedules;
 
   @override
   void initState() {
@@ -145,19 +187,20 @@ class _ScheduleListState extends State<ScheduleList> {
     sortedSchedules.sort((a, b) => a.startTime.compareTo(b.startTime));
   }
 
-  void _addSchedule(ScheduleCard schedule) {
-    setState(() {
-      sortedSchedules.add(schedule);
-      _sortSchedules();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: sortedSchedules.length,
       itemBuilder: (context, index) {
-        return sortedSchedules[index];
+        final schedule = sortedSchedules[index];
+        return ScheduleCard(
+          id: schedule.id,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          content: schedule.content,
+          priority: schedule.priority,
+          finish: schedule.finish,
+        );
       },
     );
   }

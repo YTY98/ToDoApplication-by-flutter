@@ -45,25 +45,6 @@ class _MainCalendarState extends State<MainCalendar> {
     });
   }
 
-  void _showEmptyDialog(BuildContext context, int priority) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('중요도 $priority 일정'),
-          content: Container(
-            width: double.maxFinite,
-            height: 400,
-            child: Center(
-              child: Text('일정이 없습니다.'),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -225,7 +206,6 @@ class _MainCalendarState extends State<MainCalendar> {
                             builder: (BuildContext context) {
                               var priority = globals.selected_priority;
                               return AlertDialog(
-                                //title: Text('중요도 선택'),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
