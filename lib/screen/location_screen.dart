@@ -1,25 +1,3 @@
-
-/*
-import 'package:flutter/material.dart';
-
-class LocationScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('위치'),
-      ),
-      body: Center(
-        child: Text('위치 화면'),
-      ),
-    );
-  }
-}
-
-*/
-
-
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -154,7 +132,7 @@ class LocationScreen extends StatelessWidget {
     // AppBar를 구현하는 함수
     return AppBar(
       title: Text(
-        '오늘도 출근',
+        '오늘의 일정 장소',
         style: TextStyle(
           color: Colors.blue,
           fontWeight: FontWeight.w700,

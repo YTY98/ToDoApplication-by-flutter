@@ -4,13 +4,13 @@ class ScheduleCard extends StatelessWidget {
   final int startTime;
   final int endTime;
   final String content;
-  final int priority;  // 중요도 필드 추가
+  final int priority;
 
   const ScheduleCard({
     required this.startTime,
     required this.endTime,
     required this.content,
-    required this.priority,  // 중요도 필드 초기화
+    required this.priority,
     Key? key,
   }) : super(key: key);
 
@@ -54,7 +54,7 @@ class ScheduleCard extends StatelessWidget {
             children: List.generate(3, (index) {
               return Icon(
                 index < priority ? Icons.star : Icons.star_border,
-                color: index < priority ? Colors.yellow : Colors.grey,
+                color: index < priority ? Colors.deepOrange : Colors.grey,
                 size: 15.0,
               );
             }),
@@ -115,6 +115,50 @@ class _Content extends StatelessWidget {
       child: Text(
         content,
       ),
+    );
+  }
+}
+
+class ScheduleList extends StatefulWidget {
+  final List<ScheduleCard> schedules;
+
+  const ScheduleList({
+    required this.schedules,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _ScheduleListState createState() => _ScheduleListState();
+}
+
+class _ScheduleListState extends State<ScheduleList> {
+  late List<ScheduleCard> sortedSchedules;
+
+  @override
+  void initState() {
+    super.initState();
+    sortedSchedules = List.from(widget.schedules);
+    _sortSchedules();
+  }
+
+  void _sortSchedules() {
+    sortedSchedules.sort((a, b) => a.startTime.compareTo(b.startTime));
+  }
+
+  void _addSchedule(ScheduleCard schedule) {
+    setState(() {
+      sortedSchedules.add(schedule);
+      _sortSchedules();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: sortedSchedules.length,
+      itemBuilder: (context, index) {
+        return sortedSchedules[index];
+      },
     );
   }
 }

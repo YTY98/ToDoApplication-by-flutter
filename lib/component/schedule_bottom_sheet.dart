@@ -157,7 +157,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                         return IconButton(
                           icon: Icon(
                             index < priority ? Icons.star : Icons.star_border,
-                            color: index < priority ? Colors.yellow : Colors.grey,
+                            color: index < priority ? Colors.deepOrange : Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {

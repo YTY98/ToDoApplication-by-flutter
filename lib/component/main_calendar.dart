@@ -1,23 +1,27 @@
-// main_calendar.dart
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import '../const/colors.dart';
 import '../model/event.dart';
+import '../screen/home_screen.dart'; // HomeScreenState를 가져오기 위한 import
+
+import '../screen/selected_priority.dart' as globals;
 
 class MainCalendar extends StatefulWidget {
+
   final OnDaySelected onDaySelected;
   final DateTime selectedDate;
   final Map<String, List<Event>> events;
   final Function(DateTime) onHeaderTapped;
-  final Function() onListButtonTapped; // List 버튼 클릭 시 호출될 함수
+  final Function() onListButtonTapped;
 
   MainCalendar({
     required this.onDaySelected,
     required this.selectedDate,
     required this.events,
     required this.onHeaderTapped,
-    required this.onListButtonTapped, // 생성자에 추가
+    required this.onListButtonTapped,
+
   });
 
   @override
@@ -25,18 +29,53 @@ class MainCalendar extends StatefulWidget {
 }
 
 class _MainCalendarState extends State<MainCalendar> {
+
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  int _calendarToggleCount = 0;
+
+  void _onCalendarSizeChanged(String value) {
+
+    setState(() {
+      if (value == '1주') {
+        _calendarFormat = CalendarFormat.week;
+      } else if (value == '2주') {
+        _calendarFormat = CalendarFormat.twoWeeks;
+      } else {
+        _calendarFormat = CalendarFormat.month;
+      }
+    });
+  }
+
+  void _showEmptyDialog(BuildContext context, int priority) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('중요도 $priority 일정'),
+          content: Container(
+            width: double.maxFinite,
+            height: 400,
+            child: Center(
+              child: Text('일정이 없습니다.'),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+    HomeScreenState? parent = context.findAncestorStateOfType<HomeScreenState>();
+
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(0), // 패딩 제거
+        padding: const EdgeInsets.all(0),
         child: TableCalendar(
           locale: 'ko_kr',
           firstDay: DateTime(2023, 1, 1),
@@ -61,16 +100,16 @@ class _MainCalendarState extends State<MainCalendar> {
               fontSize: 16.0,
               color: Colors.white,
             ),
-            leftChevronVisible: false, // 왼쪽 화살표 숨기기
-            rightChevronVisible: false, // 오른쪽 화살표 숨기기
+            leftChevronVisible: false,
+            rightChevronVisible: false,
             decoration: BoxDecoration(
               color: Colors.teal,
               borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
             ),
-            headerMargin: EdgeInsets.zero, // 헤더 마진 제거
-            headerPadding: EdgeInsets.zero, // 헤더 패딩 제거
+            headerMargin: EdgeInsets.zero,
+            headerPadding: EdgeInsets.zero,
           ),
-          daysOfWeekHeight: 30.0, // 간격을 늘리기 위해 높이를 증가시킴
+          daysOfWeekHeight: 30.0,
           daysOfWeekStyle: DaysOfWeekStyle(
             weekdayStyle: TextStyle(
               fontWeight: FontWeight.w600,
@@ -128,7 +167,7 @@ class _MainCalendarState extends State<MainCalendar> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(width: 48), // 왼쪽 빈 공간
+                    SizedBox(width: 48),
                     Text(
                       DateFormat.yMMMM('ko_kr').format(date),
                       style: TextStyle(
@@ -139,19 +178,145 @@ class _MainCalendarState extends State<MainCalendar> {
                     ),
                     PopupMenuButton<String>(
                       icon: Icon(Icons.expand_more, color: Colors.white),
-                      offset: Offset(0, 50), // 팝업 메뉴 위치 조정
+                      offset: Offset(0, 50),
                       onSelected: (value) {
                         if (value == '사이즈 변경') {
-                          setState(() {
-                            _calendarToggleCount = (_calendarToggleCount + 1) % 3;
-                            if (_calendarToggleCount == 0) {
-                              _calendarFormat = CalendarFormat.month;
-                            } else if (_calendarToggleCount == 1) {
-                              _calendarFormat = CalendarFormat.twoWeeks;
-                            } else {
-                              _calendarFormat = CalendarFormat.week;
-                            }
-                          });
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('사이즈 변경'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: Icon(Icons.filter_1),
+                                      title: Text('1주'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        _onCalendarSizeChanged('1주');
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.filter_2),
+                                      title: Text('2주'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        _onCalendarSizeChanged('2주');
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.calendar_view_month),
+                                      title: Text('전체'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        _onCalendarSizeChanged('전체');
+
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        } else if (value == '중요도 필터') {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              var priority = globals.selected_priority;
+                              return AlertDialog(
+                                //title: Text('중요도 선택'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: Icon(priority == 3 ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: DARK_GREY_COLOR),
+                                      title: Row( // 텍스트 대신 Row로 별 아이콘 추가
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, color: Colors.deepOrange),
+                                          Icon(Icons.star, color: Colors.deepOrange),
+                                          Icon(Icons.star, color: Colors.deepOrange),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        globals.selected_priority = 3;
+                                        parent?.setState(() {
+                                        });
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(priority == 2 ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: DARK_GREY_COLOR),
+                                      title: Row( // 텍스트 대신 Row로 별 아이콘 추가
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, color: Colors.deepOrange),
+                                          Icon(Icons.star, color: Colors.deepOrange),
+                                          Icon(Icons.star_border, color: Colors.grey),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        globals.selected_priority = 2;
+                                        parent?.setState(() {
+                                        });
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(priority == 1 ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: DARK_GREY_COLOR),
+                                      title: Row( // 텍스트 대신 Row로 별 아이콘 추가
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star, color: Colors.deepOrange),
+                                          Icon(Icons.star_border, color: Colors.grey),
+                                          Icon(Icons.star_border, color: Colors.grey),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        globals.selected_priority = 1;
+                                        parent?.setState(() {
+                                        });
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(priority == 0 ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: DARK_GREY_COLOR),
+                                      title: Row( // 텍스트 대신 Row로 별 아이콘 추가
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.star_border, color: Colors.grey),
+                                          Icon(Icons.star_border, color: Colors.grey),
+                                          Icon(Icons.star_border, color: Colors.grey),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        globals.selected_priority = 0;
+                                        parent?.setState(() {
+                                        });
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(priority == -1 ? Icons.check_box_outlined : Icons.check_box_outline_blank, color: DARK_GREY_COLOR),
+                                      title: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text("전체 보기"),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        globals.selected_priority = -1;
+                                        parent?.setState(() {
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                         }
                       },
                       itemBuilder: (BuildContext context) {
@@ -174,6 +339,17 @@ class _MainCalendarState extends State<MainCalendar> {
                                 Icon(Icons.zoom_in_map, color: Colors.black),
                                 SizedBox(width: 8),
                                 Text('사이즈 변경'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuDivider(height: 1.0),
+                          PopupMenuItem<String>(
+                            value: '중요도 필터',
+                            child: Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.black),
+                                SizedBox(width: 8),
+                                Text('중요도 필터'),
                               ],
                             ),
                           ),
