@@ -10,4 +10,7 @@ class Schedules extends Table {
   IntColumn get separator => integer()();   // 구분자
   IntColumn get priority => integer()();    // 중요도
   IntColumn get finish => integer()();
+  RealColumn get latitude => real().nullable()();  // 위도
+  RealColumn get longitude => real().nullable()(); // 경도
+  TextColumn get locationName => text()(); // 일정 장소 이름
 }

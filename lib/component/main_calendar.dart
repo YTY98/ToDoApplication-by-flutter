@@ -3,7 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import '../const/colors.dart';
 import '../model/event.dart';
-import '../screen/home_screen.dart'; // HomeScreenState를 가져오기 위한 import
+import '../screen/home_screen.dart';
 
 import '../screen/selected_priority.dart' as globals;
 
@@ -383,6 +383,42 @@ class _MainCalendarState extends State<MainCalendar> {
                   ),
                 ),
               );
+            },
+            defaultBuilder: (context, date, _) {
+              if (date.weekday == DateTime.saturday) {
+                return Container(
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Text(
+                    '${date.day}',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              } else if (date.weekday == DateTime.sunday) {
+                return Container(
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Text(
+                    '${date.day}',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }
+              return null;
             },
           ),
         ),

@@ -209,6 +209,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       content: schedule.content,
                                       priority: schedule.priority,
                                       finish: schedule.finish,
+                                      locationName: schedule.locationName,
                                     ),
                                   ),
                                 ],
