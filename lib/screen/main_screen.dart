@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../const/colors.dart';
 import 'home_screen.dart';
 import 'location_screen.dart';
-import 'profile_screen.dart';
+import 'setting_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     LocationScreen(), // 게시판 화면
-    ProfileScreen(), // 프로필 화면
+    SettingScreen(), // 프로필 화면
   ];
 
   @override
@@ -48,8 +48,8 @@ class _MainScreenState extends State<MainScreen> {
               label: '위치',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_2_rounded),
-              label: '프로필',
+              icon: Icon(Icons.settings),
+              label: '설정',
             ),
           ],
           backgroundColor: Colors.white, // 네비게이션 바 배경 색상 설정

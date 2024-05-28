@@ -9,7 +9,10 @@ import 'repository/schedule_repository.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'screen/splash_screen.dart';
+import '../login.dart'; // 로그인 페이지 import 추가
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'screen/main_screen.dart';
+import '../signPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +56,11 @@ class MyApp extends StatelessWidget {
         const Locale('en', 'US'), // English
         const Locale('ko', 'KR'), // Korean
       ],
+      routes: {
+        '/login': (context) => LoginPage(), // 로그인 페이지 라우트 추가
+        '/main': (context) => MainScreen(), // 메인 페이지 라우트 추가
+        '/sign': (context) => SignPage(),   // 회원가입 페이지 라우트 추가
+      },
     );
   }
 }

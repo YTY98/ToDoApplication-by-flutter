@@ -63,6 +63,10 @@ dependencies:
   google_maps_flutter:
   geolocator:
   google_fonts:
+  firebase_database:
+  firebase_messaging:
+  crypto:
+  shared_preferences:
 
 
 
