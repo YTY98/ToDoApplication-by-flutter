@@ -278,10 +278,6 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
         locationName: locationName,
       );
 
-      // await FirebaseFirestore.instance
-      //     .collection('schedule')
-      //     .doc(schedule.id)
-      //     .set(schedule.toJson());
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user_id)

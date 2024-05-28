@@ -371,14 +371,15 @@ class _MainCalendarState extends State<MainCalendar> {
               return Container(
                 margin: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: Colors.transparent,
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.teal,width:1.5)
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   '${date.day}',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

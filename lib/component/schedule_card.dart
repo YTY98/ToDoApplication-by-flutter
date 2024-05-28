@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../const/colors.dart';
 import '../model/schedule_model.dart';
 
@@ -29,11 +30,20 @@ class ScheduleCard extends StatefulWidget {
 
 class _ScheduleCardState extends State<ScheduleCard> {
   late int finish;
+  late String userId;
 
   @override
   void initState() {
     super.initState();
     finish = widget.finish;
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('user_id') ?? '';
+    });
   }
 
   void _toggleFinish() async {
@@ -41,10 +51,15 @@ class _ScheduleCardState extends State<ScheduleCard> {
       finish = finish == 1 ? 0 : 1;
     });
 
-    // Firestore에서 finish 값을 토글
-    await FirebaseFirestore.instance.collection('schedule').doc(widget.id).update({
-      'finish': finish,
-    });
+    if (userId.isNotEmpty) {
+      // Firestore에서 finish 값을 토글
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('schedule')
+          .doc(widget.id)
+          .update({'finish': finish});
+    }
   }
 
   @override

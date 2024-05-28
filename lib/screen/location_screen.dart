@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logger/logger.dart';
 
 class LocationScreen extends StatefulWidget {
   @override
@@ -19,7 +23,11 @@ class _LocationScreenState extends State<LocationScreen> {
   void initState() {
     super.initState();
     _determinePosition();
-    _loadMarkers();
+
+    _loadData();
+
+
+
   }
 
   Future<void> _determinePosition() async {
@@ -53,30 +61,46 @@ class _LocationScreenState extends State<LocationScreen> {
     mapController?.moveCamera(CameraUpdate.newLatLng(currentLatLng));
   }
 
-  Future<void> _loadMarkers() async {
-    final today = DateFormat('yyyyMMdd').format(DateTime.now());
-    final snapshot = await FirebaseFirestore.instance
-        .collection('schedule')
-        .where('date', isEqualTo: today)
-        .where('finish', isEqualTo: 0) // 일정 완료되지 않은 항목만 가져옴
-        .get();
-
-    Set<Marker> newMarkers = snapshot.docs.map((doc) {
-      final data = doc.data();
-      return Marker(
-        markerId: MarkerId(doc.id),
-        position: LatLng(data['latitude'], data['longitude']),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-        onTap: () {
-          _onMarkerTapped(data['locationName'], data['content'], data['startTime'], data['endTime']);
-        },
-      );
-    }).toSet();
-
+  String user_id = '';
+  Future<void> _loadData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      markers = newMarkers;
+      user_id = prefs.getString('user_id') ?? '';
+      _loadMarkers();
     });
   }
+  Future<void> _loadMarkers() async {
+
+    final today = DateFormat('yyyyMMdd').format(DateTime.now());
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user_id)
+          .collection('schedule')
+      .where('date', isEqualTo:today)
+      .where('finish', isEqualTo: 0) // 일정 완료되지 않은 항목만 가져옴
+          .get();
+
+
+      Set<Marker> newMarkers = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Marker(
+          markerId: MarkerId(doc.id),
+          position: LatLng(data['latitude'], data['longitude']),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueAzure),
+          onTap: () {
+            _onMarkerTapped(
+                data['locationName'], data['content'], data['startTime'],
+                data['endTime']);
+          },
+        );
+      }).toSet();
+
+      setState(() {
+        markers = newMarkers;
+      });
+
+    }
 
   void _onMarkerTapped(String locationName, String content, int startTime, int endTime) {
     if (selectedMarker != null) {
@@ -157,7 +181,7 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '오늘의 일정 장소',
+          "오늘의 일정 장소",
           style: TextStyle(
             color: Colors.blue,
             fontWeight: FontWeight.w700,
