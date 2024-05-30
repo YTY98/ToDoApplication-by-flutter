@@ -67,6 +67,7 @@ dependencies:
   firebase_messaging:
   crypto:
   shared_preferences:
+  http:
 
 
 

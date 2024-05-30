@@ -3,6 +3,8 @@ import '../const/colors.dart';
 import 'home_screen.dart';
 import 'location_screen.dart';
 import 'setting_screen.dart';
+import 'dairy_screen.dart';
+
 
 class MainScreen extends StatefulWidget {
   @override
@@ -14,7 +16,9 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     LocationScreen(), // 게시판 화면
-    SettingScreen(), // 프로필 화면
+    //DairyScreen(),
+    SettingScreen(), // 설정 화면
+
   ];
 
   @override
