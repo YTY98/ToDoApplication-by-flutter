@@ -433,7 +433,7 @@ import '../const/colors.dart';
 import '../model/event.dart';
 import '../screen/home_screen.dart';
 import '../screen/selected_priority.dart' as globals;
-import '../screen/dairy_screen.dart';
+import '../screen/diary_screen.dart';
 
 class MainCalendar extends StatefulWidget {
   final OnDaySelected onDaySelected;
@@ -734,7 +734,7 @@ class _MainCalendarState extends State<MainCalendar> {
                                       Navigator.of(context).pop();
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => DairyScreen(),
+                                          builder: (context) => DiaryScreen(),
                                         ),
                                       );
                                     },

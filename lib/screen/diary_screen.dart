@@ -1,359 +1,4 @@
-// import 'package:flutter/material.dart';
-// import 'package:table_calendar/table_calendar.dart';
-// import '../const/colors.dart';
-// import 'package:intl/intl.dart';
-// import 'main_screen.dart';
-//
-// class SecondCalendar extends StatelessWidget {
-//   final OnDaySelected onDaySelected; // 날짜 선택 시 실행할 함수
-//   final DateTime selectedDate; // 선택된 날짜
-//   final VoidCallback onDropdownSelected; // 드롭다운 선택 시 실행할 함수
-//
-//   SecondCalendar({
-//     required this.onDaySelected,
-//     required this.selectedDate,
-//     required this.onDropdownSelected,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(16.0), // 상하좌우 여백을 16dp로 설정
-//       child: Card(
-//         elevation: 5,
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(10),
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.all(0),
-//           child: TableCalendar(
-//             locale: 'ko_kr',
-//             firstDay: DateTime(2023, 1, 1),
-//             lastDay: DateTime(2100, 1, 1),
-//             focusedDay: selectedDate,
-//             onDaySelected: onDaySelected,
-//             selectedDayPredicate: (date) =>
-//             date.year == selectedDate.year &&
-//                 date.month == selectedDate.month &&
-//                 date.day == selectedDate.day,
-//             headerStyle: HeaderStyle(
-//               titleCentered: true,
-//               formatButtonVisible: false,
-//               titleTextFormatter: (date, locale) =>
-//                   DateFormat.yMMMM(locale).format(date),
-//               titleTextStyle: TextStyle(
-//                 fontWeight: FontWeight.w700,
-//                 fontSize: 16.0,
-//                 color: Colors.white,
-//               ),
-//               leftChevronVisible: false,
-//               rightChevronVisible: false,
-//               decoration: BoxDecoration(
-//                 color: Colors.teal,
-//                 borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-//               ),
-//               headerMargin: EdgeInsets.zero,
-//               headerPadding: EdgeInsets.zero, // 헤더 세로 늘리기
-//             ),
-//             daysOfWeekHeight: 30.0,
-//             daysOfWeekStyle: DaysOfWeekStyle(
-//               weekdayStyle: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: DARK_GREY_COLOR,
-//               ),
-//               weekendStyle: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: DARK_GREY_COLOR,
-//               ),
-//             ),
-//             calendarStyle: CalendarStyle(
-//               isTodayHighlighted: true,
-//               todayDecoration: BoxDecoration(
-//                 color: Colors.teal,
-//                 shape: BoxShape.circle,
-//               ),
-//               todayTextStyle: TextStyle(
-//                 fontWeight: FontWeight.bold,
-//                 color: Colors.white,
-//               ),
-//               defaultDecoration: BoxDecoration(
-//                 shape: BoxShape.circle,
-//               ),
-//               weekendDecoration: BoxDecoration(
-//                 shape: BoxShape.circle,
-//               ),
-//               selectedDecoration: BoxDecoration(
-//                 color: Colors.teal,
-//                 shape: BoxShape.rectangle,
-//                 borderRadius: BorderRadius.circular(5.0),
-//               ),
-//               defaultTextStyle: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.black,
-//               ),
-//               weekendTextStyle: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.blue,
-//               ),
-//               selectedTextStyle: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.white,
-//               ),
-//               outsideTextStyle: TextStyle(
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.transparent,
-//               ),
-//             ),
-//             calendarBuilders: CalendarBuilders(
-//               headerTitleBuilder: (context, date) {
-//                 return GestureDetector(
-//                   onTap: () => onDropdownSelected(),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       SizedBox(width: 48),
-//                       Text(
-//                         DateFormat.yMMMM('ko_kr').format(date),
-//                         style: TextStyle(
-//                           fontWeight: FontWeight.w700,
-//                           fontSize: 16.0,
-//                           color: Colors.white,
-//                         ),
-//                       ),
-//                       PopupMenuButton<String>(
-//                         icon: Icon(Icons.expand_more, color: Colors.white),
-//                         offset: Offset(0, 50),
-//                         onSelected: (value) {
-//                           if (value == '할 일 전환') {
-//                             onDropdownSelected();
-//                           }
-//                         },
-//                         itemBuilder: (context) => [
-//                           PopupMenuItem(
-//                             value: '할 일 전환',
-//                             child: Row(
-//                               children: [
-//                                 Icon(Icons.calendar_month, color: Colors.black),
-//                                 SizedBox(width: 8),
-//                                 Text('할 일 전환'),
-//                               ],
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               },
-//               todayBuilder: (context, date, _) {
-//                 return Container(
-//                   margin: const EdgeInsets.all(8.0),
-//                   decoration: BoxDecoration(
-//                     color: Colors.transparent,
-//                     shape: BoxShape.circle,
-//                     border: Border.all(color: Colors.teal, width: 1.5),
-//                   ),
-//                   alignment: Alignment.center,
-//                   child: Text(
-//                     '${date.day}',
-//                     style: TextStyle(
-//                       color: Colors.black,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//                 );
-//               },
-//               defaultBuilder: (context, date, _) {
-//                 if (date.weekday == DateTime.saturday) {
-//                   return Container(
-//                     margin: const EdgeInsets.all(6.0),
-//                     alignment: Alignment.center,
-//                     decoration: BoxDecoration(
-//                       shape: BoxShape.rectangle,
-//                       borderRadius: BorderRadius.circular(5.0),
-//                     ),
-//                     child: Text(
-//                       '${date.day}',
-//                       style: TextStyle(
-//                         color: Colors.blue,
-//                         fontWeight: FontWeight.w600,
-//                       ),
-//                     ),
-//                   );
-//                 } else if (date.weekday == DateTime.sunday) {
-//                   return Container(
-//                     margin: const EdgeInsets.all(6.0),
-//                     alignment: Alignment.center,
-//                     decoration: BoxDecoration(
-//                       shape: BoxShape.rectangle,
-//                       borderRadius: BorderRadius.circular(5.0),
-//                     ),
-//                     child: Text(
-//                       '${date.day}',
-//                       style: TextStyle(
-//                         color: Colors.red,
-//                         fontWeight: FontWeight.w600,
-//                       ),
-//                     ),
-//                   );
-//                 } else {
-//                   return Container(
-//                     margin: const EdgeInsets.all(6.0),
-//                     alignment: Alignment.center,
-//                     decoration: BoxDecoration(
-//                       shape: BoxShape.rectangle,
-//                       borderRadius: BorderRadius.circular(5.0),
-//                     ),
-//                     child: Text(
-//                       '${date.day}',
-//                       style: TextStyle(
-//                         color: Colors.black,
-//                         fontWeight: FontWeight.w600,
-//                       ),
-//                     ),
-//                   );
-//                 }
-//               },
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// class DairyScreen extends StatefulWidget {
-//   const DairyScreen({Key? key}) : super(key: key);
-//
-//   @override
-//   State<DairyScreen> createState() => _DairyScreenState();
-// }
-//
-// class _DairyScreenState extends State<DairyScreen> {
-//   DateTime selectedDate = DateTime.utc(
-//     DateTime.now().year,
-//     DateTime.now().month,
-//     DateTime.now().day,
-//   );
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       _showWelcomeMessage();
-//     });
-//   }
-//
-//   void _showWelcomeMessage() {
-//     final overlay = Overlay.of(context);
-//     final overlayEntry = OverlayEntry(
-//       builder: (context) => Positioned(
-//         top: 50.0,
-//         left: MediaQuery.of(context).size.width * 0.1,
-//         width: MediaQuery.of(context).size.width * 0.8,
-//         child: Material(
-//           color: Colors.transparent,
-//           child: Container(
-//             padding: EdgeInsets.all(16.0),
-//             decoration: BoxDecoration(
-//               color: Colors.black.withOpacity(0.7),
-//               borderRadius: BorderRadius.circular(10.0),
-//             ),
-//             child: Text(
-//               "일기를 확인하는 공간입니다.\n날짜를 눌러 일기를 확인하세요.",
-//               style: TextStyle(color: Colors.white, fontSize: 16.0),
-//               textAlign: TextAlign.center,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//
-//     overlay.insert(overlayEntry);
-//
-//     Future.delayed(Duration(seconds: 4), () {
-//       overlayEntry.remove();
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: SafeArea(
-//         child: Column(
-//           children: [
-//             SecondCalendar(
-//               selectedDate: selectedDate,
-//               onDaySelected: onDaySelected,
-//               onDropdownSelected: _onDropdownSelected,
-//             ),
-//             Expanded(
-//               child: Container(),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   void onDaySelected(DateTime selectedDate, DateTime focusedDate) {
-//     setState(() {
-//       this.selectedDate = selectedDate;
-//     });
-//
-//     // 날짜 클릭 시 팝업 창 띄우기
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: Text('선택한 날짜'),
-//         content: Text(
-//           '선택된 날짜는 ${DateFormat.yMMMMd('ko_kr').format(selectedDate)} 입니다.',
-//         ),
-//         actions: [
-//           TextButton(
-//             child: Text('확인'),
-//             onPressed: () {
-//               Navigator.of(context).pop();
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void _onDropdownSelected() {
-//     // 드롭다운 메뉴 선택 시 실행할 로직을 여기에 작성합니다.
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text("할 일 전환"),
-//           content: Text("기본 화면으로 전환하시겠습니까?"),
-//           actions: [
-//             TextButton(
-//               child: Text("취소"),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//             TextButton(
-//               child: Text("확인"),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//                 Navigator.of(context).pushReplacement(
-//                   MaterialPageRoute(builder: (context) => MainScreen()),
-//                 );
-//               },
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }
-
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -488,7 +133,7 @@ class SecondCalendar extends StatelessWidget {
                           if (value == '할 일 전환') {
                             onDropdownSelected();
                           } else if (value == '일기 생성') {
-                            generateDairy(context, date);
+                            generateDiary(context, date);
                           }
                         },
                         itemBuilder: (context) => [
@@ -594,7 +239,7 @@ class SecondCalendar extends StatelessWidget {
     );
   }
 
-  Future<void> generateDairy(BuildContext context, DateTime date) async {
+  Future<void> generateDiary(BuildContext context, DateTime date) async {
     showDialog(
       context: context,
       builder: (context) {
@@ -662,12 +307,13 @@ class SecondCalendar extends StatelessWidget {
               ],
             );
           },
+
         );
         return;
       }
 
       final response = await http.post(
-        Uri.parse('http://165.229.89.157:8080/generate-dairy'),
+        Uri.parse('http://165.229.89.157:8080/generate-diary'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -677,7 +323,7 @@ class SecondCalendar extends StatelessWidget {
           'schedule_names': completedSchedules.join(', '),
           'uncompleted_schedule_names': uncompletedSchedules.join(', '),
         }),
-      ).timeout(Duration(seconds: 30)); // 타임아웃 설정
+      ).timeout(Duration(seconds: 40)); // 타임아웃 설정
 
       if (response.statusCode == 200) {
         final content = jsonDecode(response.body)['content'];
@@ -686,7 +332,7 @@ class SecondCalendar extends StatelessWidget {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('dairy')
+            .collection('diary')
             .doc(selectedDateStr)
             .set({
           'date': selectedDateStr,
@@ -711,7 +357,7 @@ class SecondCalendar extends StatelessWidget {
           },
         );
       } else {
-        throw Exception('Failed to generate dairy');
+        throw Exception('Failed to generate diary');
       }
     } on TimeoutException catch (e) {
       Navigator.of(context).pop();
@@ -773,14 +419,14 @@ class SecondCalendar extends StatelessWidget {
   }
 }
 
-class DairyScreen extends StatefulWidget {
-  const DairyScreen({Key? key}) : super(key: key);
+class DiaryScreen extends StatefulWidget {
+  const DiaryScreen({Key? key}) : super(key: key);
 
   @override
-  State<DairyScreen> createState() => _DairyScreenState();
+  State<DiaryScreen> createState() => _DiaryScreenState();
 }
 
-class _DairyScreenState extends State<DairyScreen> {
+class _DiaryScreenState extends State<DiaryScreen> {
   DateTime selectedDate = DateTime.utc(
     DateTime.now().year,
     DateTime.now().month,
@@ -878,7 +524,7 @@ class _DairyScreenState extends State<DairyScreen> {
     final docSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
-        .collection('dairy')
+        .collection('diary')
         .doc(selectedDateStr)
         .get();
 
