@@ -68,7 +68,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: finish == 1 ? LIGHT_GREY_COLOR : Colors.white,
+            color: finish == 1 ? LAVENDER_COLOR : Colors.white,
             border: Border.all(
               width: 1.0,
               color: Colors.grey.shade300,
@@ -115,7 +115,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
           child: IconButton(
             icon: Icon(
               finish == 1 ? Icons.check_box : Icons.check_box_outline_blank,
-              color: finish == 1 ? Colors.teal : Colors.grey,
+              color: finish == 1 ? PURPLE_COLOR : Colors.grey.shade300,
             ),
             onPressed: _toggleFinish,
           ),
@@ -139,7 +139,7 @@ class _Time extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyle = TextStyle(
       fontWeight: FontWeight.w600,
-      color: Colors.teal,
+      color: PURPLE_COLOR,
       fontSize: 14.0,
     );
 

@@ -35,16 +35,17 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: PRIMARY_COLOR,
+          color: Colors.white,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center, // 위젯들을 세로 중앙으로 정렬
           children: [
             Image.asset(
-              'assets/logo.png',
+              'assets/logo2.png',
             ),
             CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(GOLD_COLOR),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+              strokeWidth: 3,
             ),
           ],
         ),

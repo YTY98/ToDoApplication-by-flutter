@@ -1,15 +1,15 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../const/colors.dart';
 import '../model/schedule_model.dart';
 import 'package:uuid/uuid.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Page/LocationPage.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
-  
   final DateTime selectedDate;
 
   const ScheduleBottomSheet({
@@ -22,7 +22,6 @@ class ScheduleBottomSheet extends StatefulWidget {
 }
 
 class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
-
   String user_id = '';
   Future<void> _loadData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,7 +35,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     super.initState();
     _loadData();
   }
-  
+
   final GlobalKey<FormState> formKey = GlobalKey();
 
   int? startTime;
@@ -67,77 +66,51 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
               children: [
                 if (!isTimeSelected)
                   ...[
+                    SizedBox(height: 20), // 위치를 아래로 내리기 위한 추가된 여백
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.cloud, color: PURPLE_COLOR,size: 30),
+                        SizedBox(width: 10),
+                        Text(
+                          '${widget.selectedDate.year}년 ${widget.selectedDate.month}월 ${widget.selectedDate.day}일',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.cloud, color: PURPLE_COLOR,size:30,),
+                      ],
+                    ),
+                    SizedBox(height: 40), // 날짜 텍스트와 버튼 사이의 간격
                     Row(
                       children: [
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '시작 시간',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              TimePickerSpinner(
-                                is24HourMode: true,
-                                normalTextStyle: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                ),
-                                highlightedTextStyle: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.blue,
-                                ),
-                                spacing: 50,
-                                itemHeight: 70,
-                                isForce2Digits: true,
-                                onTimeChange: (time) {
-                                  setState(() {
-                                    startTime = time.hour * 60 + time.minute;
-                                  });
-                                },
-                              ),
-                            ],
+                          child: ElevatedButton(
+                            onPressed: () => _selectTime(context, true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: PURPLE_COLOR,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text('시작 시간'),
                           ),
                         ),
-                        const SizedBox(width: 16.0),
+                        const SizedBox(width: 17.0),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '종료 시간',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              TimePickerSpinner(
-                                is24HourMode: true,
-                                normalTextStyle: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                ),
-                                highlightedTextStyle: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.blue,
-                                ),
-                                spacing: 50,
-                                itemHeight: 70,
-                                isForce2Digits: true,
-                                onTimeChange: (time) {
-                                  setState(() {
-                                    endTime = time.hour * 60 + time.minute;
-                                  });
-                                },
-                              ),
-                            ],
+                          child: ElevatedButton(
+                            onPressed: () => _selectTime(context, false),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: PURPLE_COLOR,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text('종료 시간'),
                           ),
                         ),
                       ],
                     ),
+                    SizedBox(height: 90), // 시작 시간 버튼과 종료 시간 버튼 사이의 세로 여백
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -155,8 +128,8 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          foregroundColor: Colors.black,
+                          backgroundColor: PURPLE_COLOR,
+                          foregroundColor: Colors.white,
                         ),
                         child: Text('다음'),
                       ),
@@ -168,7 +141,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.location_on, color: Colors.teal),
+                          icon: Icon(Icons.location_on, color: PURPLE_COLOR),
                           onPressed: () async {
                             final result = await Navigator.of(context).push(
                               MaterialPageRoute(
@@ -191,16 +164,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
-                          color: Colors.grey[200],
-                          backgroundBlendMode: BlendMode.darken,
-                          image: DecorationImage(
-                            image: AssetImage('assets/grid_pattern.png'),
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                              Colors.white.withOpacity(0.8),
-                              BlendMode.dstATop,
-                            ),
-                          ),
+                          color: LIGHT_GREY_COLOR,
                         ),
                         child: TextFormField(
                           maxLines: null,
@@ -240,8 +204,8 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
                       child: ElevatedButton(
                         onPressed: () => onSavePressed(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          foregroundColor: Colors.black,
+                          backgroundColor: PURPLE_COLOR,
+                          foregroundColor: Colors.white,
                         ),
                         child: Text('저장'),
                       ),
@@ -253,6 +217,23 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectTime(BuildContext context, bool isStartTime) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        final timeInMinutes = picked.hour * 60 + picked.minute;
+        if (isStartTime) {
+          startTime = timeInMinutes;
+        } else {
+          endTime = timeInMinutes;
+        }
+      });
+    }
   }
 
   void onSavePressed(BuildContext context) async {

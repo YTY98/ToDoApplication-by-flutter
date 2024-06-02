@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-
+import '../const/colors.dart'; // PURPLE_COLOR를 사용하기 위해 import 합니다.
 
 class LocationPage extends StatefulWidget {
   @override
@@ -42,7 +42,10 @@ class _LocationPageState extends State<LocationPage> {
     }
 
     final position = await Geolocator.getCurrentPosition();
-    mapController?.moveCamera(CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)));
+    mapController?.animateCamera(CameraUpdate.newLatLngZoom(
+      LatLng(position.latitude, position.longitude),
+      15, // 줌 레벨을 15로 설정하여 줌 인된 상태로 표시합니다.
+    ));
   }
 
   @override
@@ -74,7 +77,8 @@ class _LocationPageState extends State<LocationPage> {
                 Marker(
                   markerId: MarkerId('selected-location'),
                   position: selectedLocation!,
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueRed),
                 ),
               },
             ),
@@ -84,7 +88,9 @@ class _LocationPageState extends State<LocationPage> {
             child: TextField(
               decoration: InputDecoration(
                 labelText: '장소 이름',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
               onChanged: (value) {
                 setState(() {
@@ -105,6 +111,13 @@ class _LocationPageState extends State<LocationPage> {
                 // Show error message if location or name is not provided
               }
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: PURPLE_COLOR,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14.0),
+              ),
+            ),
             child: Text('확인'),
           ),
         ],

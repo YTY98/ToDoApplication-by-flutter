@@ -1,423 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../const/colors.dart';
 import 'main_screen.dart';
-
-class SecondCalendar extends StatelessWidget {
-  final OnDaySelected onDaySelected; // 날짜 선택 시 실행할 함수
-  final DateTime selectedDate; // 선택된 날짜
-  final VoidCallback onDropdownSelected; // 드롭다운 선택 시 실행할 함수
-
-  SecondCalendar({
-    required this.onDaySelected,
-    required this.selectedDate,
-    required this.onDropdownSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0), // 상하좌우 여백을 16dp로 설정
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: TableCalendar(
-            locale: 'ko_kr',
-            firstDay: DateTime(2023, 1, 1),
-            lastDay: DateTime(2100, 1, 1),
-            focusedDay: selectedDate,
-            onDaySelected: onDaySelected,
-            selectedDayPredicate: (date) =>
-            date.year == selectedDate.year &&
-                date.month == selectedDate.month &&
-                date.day == selectedDate.day,
-            headerStyle: HeaderStyle(
-              titleCentered: true,
-              formatButtonVisible: false,
-              titleTextFormatter: (date, locale) =>
-                  DateFormat.yMMMM(locale).format(date),
-              titleTextStyle: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 16.0,
-                color: Colors.white,
-              ),
-              leftChevronVisible: false,
-              rightChevronVisible: false,
-              decoration: BoxDecoration(
-                color: Colors.teal,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-              ),
-              headerMargin: EdgeInsets.zero,
-              headerPadding: EdgeInsets.zero, // 헤더 세로 늘리기
-            ),
-            daysOfWeekHeight: 30.0,
-            daysOfWeekStyle: DaysOfWeekStyle(
-              weekdayStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: DARK_GREY_COLOR,
-              ),
-              weekendStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: DARK_GREY_COLOR,
-              ),
-            ),
-            calendarStyle: CalendarStyle(
-              isTodayHighlighted: true,
-              todayDecoration: BoxDecoration(
-                color: Colors.teal,
-                shape: BoxShape.circle,
-              ),
-              todayTextStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              defaultDecoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              weekendDecoration: BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              selectedDecoration: BoxDecoration(
-                color: Colors.teal,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              defaultTextStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-              weekendTextStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.blue,
-              ),
-              selectedTextStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-              outsideTextStyle: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.transparent,
-              ),
-            ),
-            calendarBuilders: CalendarBuilders(
-              headerTitleBuilder: (context, date) {
-                return GestureDetector(
-                  onTap: () => onDropdownSelected(),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(width: 48),
-                      Text(
-                        DateFormat.yMMMM('ko_kr').format(date),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                      PopupMenuButton<String>(
-                        icon: Icon(Icons.expand_more, color: Colors.white),
-                        offset: Offset(0, 50),
-                        onSelected: (value) {
-                          if (value == '할 일 전환') {
-                            onDropdownSelected();
-                          } else if (value == '일기 생성') {
-                            generateDiary(context, date);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: '할 일 전환',
-                            child: Row(
-                              children: [
-                                Icon(Icons.calendar_month, color: Colors.black),
-                                SizedBox(width: 8),
-                                Text('할 일 전환'),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: '일기 생성',
-                            child: Row(
-                              children: [
-                                Icon(Icons.create, color: Colors.black),
-                                SizedBox(width: 8),
-                                Text('일기 생성'),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              todayBuilder: (context, date, _) {
-                return Container(
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.teal, width: 1.5),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${date.day}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                );
-              },
-              defaultBuilder: (context, date, _) {
-                if (date.weekday == DateTime.saturday) {
-                  return Container(
-                    margin: const EdgeInsets.all(6.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Text(
-                      '${date.day}',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                } else if (date.weekday == DateTime.sunday) {
-                  return Container(
-                    margin: const EdgeInsets.all(6.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Text(
-                      '${date.day}',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                } else {
-                  return Container(
-                    margin: const EdgeInsets.all(6.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Text(
-                      '${date.day}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> generateDiary(BuildContext context, DateTime date) async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('일기 생성 중'),
-          content: Text('일기가 생성되고 있습니다. 잠시만 기다려주세요.'),
-        );
-      },
-    );
-
-    try {
-      final selectedDateStr = DateFormat('yyyyMMdd').format(date);
-      final userId = await getCurrentUserId(); // Firestore에서 현재 로그인한 사용자 ID를 가져옴
-
-      if (userId == null) {
-        Navigator.of(context).pop();
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('일기 생성 실패'),
-              content: Text('사용자 정보를 가져올 수 없습니다.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('확인'),
-                ),
-              ],
-            );
-          },
-        );
-        return;
-      }
-
-      // Firestore에서 일정 데이터를 가져오기
-      final snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('schedule')
-          .where('date', isEqualTo: selectedDateStr)
-          .get();
-
-      final completedSchedules = snapshot.docs
-          .where((doc) => doc['finish'] == 1)
-          .map((doc) => doc['content'])
-          .toList();
-      final uncompletedSchedules = snapshot.docs
-          .where((doc) => doc['finish'] == 0)
-          .map((doc) => doc['content'])
-          .toList();
-
-      if (completedSchedules.isEmpty) {
-        Navigator.of(context).pop();
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('일기 생성 실패'),
-              content: Text('완료된 일정이 없습니다.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('확인'),
-                ),
-              ],
-            );
-          },
-
-        );
-        return;
-      }
-
-      final response = await http.post(
-        Uri.parse('http://165.229.89.157:8080/generate-diary'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'user_id': userId,
-          'date': selectedDateStr,
-          'schedule_names': completedSchedules.join(', '),
-          'uncompleted_schedule_names': uncompletedSchedules.join(', '),
-        }),
-      ).timeout(Duration(seconds: 40)); // 타임아웃 설정
-
-      if (response.statusCode == 200) {
-        final content = jsonDecode(response.body)['content'];
-
-        // Firestore에 생성된 일기 저장
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .collection('diary')
-            .doc(selectedDateStr)
-            .set({
-          'date': selectedDateStr,
-          'content': content,
-          'schedule_id': snapshot.docs.first.id,
-        });
-
-        Navigator.of(context).pop();
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('일기 생성 완료'),
-              content: Text('일기가 성공적으로 생성되었습니다.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('확인'),
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        throw Exception('Failed to generate diary');
-      }
-    } on TimeoutException catch (e) {
-      Navigator.of(context).pop();
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('일기 생성 실패'),
-            content: Text('서버 응답 시간 초과: $e'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('확인'),
-              ),
-            ],
-          );
-        },
-      );
-    } on SocketException catch (e) {
-      Navigator.of(context).pop();
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('일기 생성 실패'),
-            content: Text('네트워크 오류: $e'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('확인'),
-              ),
-            ],
-          );
-        },
-      );
-    } catch (e) {
-      Navigator.of(context).pop();
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('일기 생성 실패'),
-            content: Text('일기 생성 중 오류가 발생했습니다: $e'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('확인'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  Future<String?> getCurrentUserId() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('user_id');
-  }
-}
+import '../component/second_calendar.dart';
 
 class DiaryScreen extends StatefulWidget {
   const DiaryScreen({Key? key}) : super(key: key);
@@ -483,6 +70,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
               selectedDate: selectedDate,
               onDaySelected: onDaySelected,
               onDropdownSelected: _onDropdownSelected,
+              onHeaderTapped: _onHeaderTapped,
             ),
             Expanded(
               child: Container(),
@@ -533,15 +121,23 @@ class _DiaryScreenState extends State<DiaryScreen> {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('작성된 일기'),
-            content: Text(content),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('확인'),
+          return GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: AlertDialog(
+              title: Center(
+                child: Text(
+                  DateFormat('yyyy년 MM월 dd일').format(selectedDate),
+                  style: TextStyle(
+                    color: PURPLE_COLOR,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ],
+              content: Text(content),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+            ),
           );
         },
       );
@@ -549,15 +145,23 @@ class _DiaryScreenState extends State<DiaryScreen> {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('작성된 일기 없음'),
-            content: Text('선택한 날짜에 작성된 일기가 없습니다.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('확인'),
+          return GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: AlertDialog(
+              title: Center(
+                child: Text(
+                  DateFormat('yyyy년 MM월 dd일').format(selectedDate),
+                  style: TextStyle(
+                    color: PURPLE_COLOR,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ],
+              content: Text('선택한 날짜에 작성된 일기가 없습니다.'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+            ),
           );
         },
       );
@@ -596,6 +200,132 @@ class _DiaryScreenState extends State<DiaryScreen> {
           ],
         );
       },
+    );
+  }
+
+  void _onHeaderTapped(DateTime date) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return YearMonthPicker(
+          initialDate: date,
+          onDateChanged: (newDate) {
+            setState(() {
+              selectedDate = newDate;
+            });
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+}
+
+class YearMonthPicker extends StatefulWidget {
+  final DateTime initialDate;
+  final ValueChanged<DateTime> onDateChanged;
+
+  YearMonthPicker({
+    required this.initialDate,
+    required this.onDateChanged,
+  });
+
+  @override
+  _YearMonthPickerState createState() => _YearMonthPickerState();
+}
+
+class _YearMonthPickerState extends State<YearMonthPicker> {
+  late int selectedYear;
+  late int selectedMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedYear = widget.initialDate.year;
+    selectedMonth = widget.initialDate.month;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 160,
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 100, // 버튼의 가로 길이를 늘림
+                padding: EdgeInsets.symmetric(horizontal: 10), // 내부 패딩 설정
+                decoration: BoxDecoration(
+                  border: Border.all(color: PURPLE_COLOR, width: 2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: DropdownButton<int>(
+                  isExpanded: true, // 텍스트 중앙 정렬
+                  value: selectedYear,
+                  iconEnabledColor: PURPLE_COLOR,
+                  style: TextStyle(color: PURPLE_COLOR), // 텍스트 색상 설정
+                  items: List.generate(78, (index) => 2023 + index)
+                      .map((year) => DropdownMenuItem(
+                    child: Center(child: Text('$year년', style: TextStyle(color: PURPLE_COLOR))),
+                    value: year,
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedYear = value!;
+                    });
+                  },
+                  underline: SizedBox(), // DropdownButton 기본 밑줄 제거
+                ),
+              ),
+              SizedBox(width: 30), // 2024 버튼과 6 버튼 사이의 가로 간격 늘림
+              Container(
+                width: 100, // 버튼의 가로 길이를 늘림
+                padding: EdgeInsets.symmetric(horizontal: 10), // 내부 패딩 설정
+                decoration: BoxDecoration(
+                  border: Border.all(color: PURPLE_COLOR, width: 2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: DropdownButton<int>(
+                  isExpanded: true, // 텍스트 중앙 정렬
+                  iconEnabledColor: PURPLE_COLOR,
+                  style: TextStyle(color: PURPLE_COLOR), // 텍스트 색상 설정
+                  value: selectedMonth,
+                  items: List.generate(12, (index) => index + 1)
+                      .map((month) => DropdownMenuItem(
+                    child: Center(child: Text('$month월', style: TextStyle(color: PURPLE_COLOR))),
+                    value: month,
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMonth = value!;
+                    });
+                  },
+                  underline: SizedBox(), // DropdownButton 기본 밑줄 제거
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Container(
+            width: 270,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: PURPLE_COLOR, // Button text color
+              ),
+              onPressed: () {
+                widget.onDateChanged(DateTime(selectedYear, selectedMonth));
+              },
+              child: Text('확인'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -90,7 +90,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.teal,
+        backgroundColor: PURPLE_COLOR,
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -198,7 +198,7 @@ class HomeScreenState extends State<HomeScreen> {
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10),
                                           ),
-                                          backgroundColor: Colors.pinkAccent,
+                                          backgroundColor: l2,
                                           padding: EdgeInsets.all(10),
                                           minimumSize: Size(60, 60),
                                         ),
@@ -280,56 +280,82 @@ class _YearMonthPickerState extends State<YearMonthPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return Container(
+      height: 160,
+      padding: EdgeInsets.all(16.0),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              DropdownButton<int>(
-                value: selectedYear,
-                items: List.generate(
-                  78,
-                      (index) => 2023 + index,
-                ).map((year) {
-                  return DropdownMenuItem(
+              Container(
+                width: 100, // 버튼의 가로 길이를 늘림
+                padding: EdgeInsets.symmetric(horizontal: 10), // 내부 패딩 설정
+                decoration: BoxDecoration(
+                  border: Border.all(color: PURPLE_COLOR, width: 2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: DropdownButton<int>(
+                  isExpanded: true, // 텍스트 중앙 정렬
+                  value: selectedYear,
+                  iconEnabledColor: PURPLE_COLOR,
+                  style: TextStyle(color: PURPLE_COLOR), // 텍스트 색상 설정
+                  items: List.generate(78, (index) => 2023 + index)
+                      .map((year) => DropdownMenuItem(
+                    child: Center(child: Text('$year년', style: TextStyle(color: PURPLE_COLOR))),
                     value: year,
-                    child: Text('$year'),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedYear = value!;
-                  });
-                },
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedYear = value!;
+                    });
+                  },
+                  underline: SizedBox(), // DropdownButton 기본 밑줄 제거
+                ),
               ),
-              SizedBox(width: 16),
-              DropdownButton<int>(
-                value: selectedMonth,
-                items: List.generate(
-                  12,
-                      (index) => index + 1,
-                ).map((month) {
-                  return DropdownMenuItem(
+              SizedBox(width: 30), // 2024 버튼과 6 버튼 사이의 가로 간격 늘림
+              Container(
+                width: 100, // 버튼의 가로 길이를 늘림
+                padding: EdgeInsets.symmetric(horizontal: 10), // 내부 패딩 설정
+                decoration: BoxDecoration(
+                  border: Border.all(color: PURPLE_COLOR, width: 2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: DropdownButton<int>(
+                  isExpanded: true, // 텍스트 중앙 정렬
+                  iconEnabledColor: PURPLE_COLOR,
+                  style: TextStyle(color: PURPLE_COLOR), // 텍스트 색상 설정
+                  value: selectedMonth,
+                  items: List.generate(12, (index) => index + 1)
+                      .map((month) => DropdownMenuItem(
+                    child: Center(child: Text('$month월', style: TextStyle(color: PURPLE_COLOR))),
                     value: month,
-                    child: Text('$month'),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedMonth = value!;
-                  });
-                },
+                  ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMonth = value!;
+                    });
+                  },
+                  underline: SizedBox(), // DropdownButton 기본 밑줄 제거
+                ),
               ),
             ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              widget.onDateChanged(DateTime(selectedYear, selectedMonth));
-            },
-            child: Text('확인'),
+          SizedBox(height: 20),
+          Container(
+            width: 270,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: PURPLE_COLOR, // Button text color
+              ),
+              onPressed: () {
+                widget.onDateChanged(DateTime(selectedYear, selectedMonth));
+              },
+              child: Text('확인'),
+            ),
           ),
         ],
       ),

@@ -145,9 +145,19 @@ class SettingScreen extends StatelessWidget {
             return ListView(
               padding: const EdgeInsets.only(top: 13.0, left: 18, right: 18),
               children: [
-                Text(
-                  '환영합니다. ${snapshot.data}님',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.account_circle,
+                      size: 24, // 아이콘 크기 설정
+                    ),
+                    Text(
+                      '  환영합니다. ${snapshot.data}님',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(width: 8), // 텍스트와 아이콘 사이에 간격 추가
+
+                  ],
                 ),
                 Divider(height: 25, thickness: 1),
                 ListTile(

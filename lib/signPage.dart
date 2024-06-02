@@ -33,19 +33,29 @@ class _SignPage extends State<SignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('회원 가입'),
+        title: Row(
+          children: [
+            Text('회원 가입'),
+            SizedBox(width: 145), // 간격 추가
+            Icon(Icons.account_circle, size: 30),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(16.0),
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                // Add padding above the TextField
+                SizedBox(height: 40), // 전체적인 위치를 아래로 내리기 위해 추가
                 Container(
-                  padding: EdgeInsets.only(top: 40.0),
+                  padding: EdgeInsets.only(top: 2),
                   width: 300,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: TextField(
                     controller: _idTextController,
                     maxLines: 1,
@@ -53,13 +63,18 @@ class _SignPage extends State<SignPage> {
                       contentPadding: EdgeInsets.all(16.0),
                       hintText: '4자 이상 입력해주세요',
                       labelText: '아이디',
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
-                SizedBox(
+                Container(
                   width: 300,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: TextField(
                     controller: _pwTextController,
                     obscureText: true,
@@ -68,13 +83,18 @@ class _SignPage extends State<SignPage> {
                       contentPadding: EdgeInsets.all(16.0),
                       hintText: '6자 이상 입력해주세요',
                       labelText: '비밀번호',
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
-                SizedBox(
+                Container(
                   width: 300,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   child: TextField(
                     controller: _pwCheckTextController,
                     obscureText: true,
@@ -82,7 +102,8 @@ class _SignPage extends State<SignPage> {
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(16.0),
                       labelText: '비밀번호 확인',
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
@@ -144,7 +165,7 @@ class _SignPage extends State<SignPage> {
                       backgroundColor: Colors.black,
                       padding: EdgeInsets.symmetric(vertical: 16.0),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
                     child: Text(

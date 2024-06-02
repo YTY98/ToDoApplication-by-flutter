@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:schedulemate1/const/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:logger/logger.dart';
 
@@ -182,7 +183,7 @@ class _LocationScreenState extends State<LocationScreen> {
         title: Text(
           "오늘의 일정 장소",
           style: TextStyle(
-            color: Colors.blue,
+            color: PURPLE_COLOR,
             fontWeight: FontWeight.w700,
           ),
         ),
