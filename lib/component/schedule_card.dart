@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import '../const/colors.dart';
 import '../model/schedule_model.dart';
+import '../services/notification_service.dart'; // NotificationService import 추가
 
 class ScheduleCard extends StatefulWidget {
   final String id;
@@ -31,12 +35,15 @@ class ScheduleCard extends StatefulWidget {
 class _ScheduleCardState extends State<ScheduleCard> {
   late int finish;
   late String userId;
+  final NotificationService _notificationService = NotificationService(); // NotificationService 인스턴스 생성
 
   @override
   void initState() {
     super.initState();
     finish = widget.finish;
     _loadUserId();
+    _notificationService.init(); // 알림 초기화
+    _scheduleNotifications(); // 일정 알림 예약
   }
 
   Future<void> _loadUserId() async {
@@ -44,6 +51,37 @@ class _ScheduleCardState extends State<ScheduleCard> {
     setState(() {
       userId = prefs.getString('user_id') ?? '';
     });
+  }
+
+  Future<void> _scheduleNotifications() async {
+    final now = DateTime.now();
+    final scheduledTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      widget.startTime ~/ 60,
+      widget.startTime % 60,
+    );
+
+    final scheduledTimeMinus30 = scheduledTime.subtract(Duration(minutes: 30));
+
+    if (scheduledTimeMinus30.isAfter(now)) {
+      await _notificationService.scheduleNotification(
+        widget.id.hashCode,
+        "⏰일정 알림⏰",
+        "\"${widget.content}\" 일정까지 30분 남았습니다.",
+        scheduledTimeMinus30,
+      );
+    }
+
+    if (scheduledTime.isAfter(now)) {
+      await _notificationService.scheduleNotification(
+        widget.id.hashCode + 1,
+        "⏰일정 알림⏰",
+        "\"${widget.content}\" 일정을 할 시간입니다.",
+        scheduledTime,
+      );
+    }
   }
 
   void _toggleFinish() async {
@@ -59,6 +97,15 @@ class _ScheduleCardState extends State<ScheduleCard> {
           .collection('schedule')
           .doc(widget.id)
           .update({'finish': finish});
+    }
+
+    // finish가 1로 변경되면 알림 발송
+    if (finish == 1) {
+      await _notificationService.showNotification("참 잘했어요👍", "\"${widget.content}\" 일정을 완료했습니다.");
+    }
+    // finish가 0로 변경되면 알림 발송
+    else if (finish == 0) {
+      await _notificationService.showNotification("앗, 다시 확인해주세요😢", "\"${widget.content}\" 일정 완료를 해제했습니다.");
     }
   }
 

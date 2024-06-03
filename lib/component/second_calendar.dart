@@ -172,7 +172,7 @@ class _SecondCalendarState extends State<SecondCalendar> {
                         right: -2,
                         child: Icon(
                           Icons.star,
-                          color: paleGreen,
+                          color: l3,
                           size: 20.0,
                         ),
 
