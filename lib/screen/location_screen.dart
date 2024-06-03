@@ -122,16 +122,60 @@ class _LocationScreenState extends State<LocationScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(locationName),
+          backgroundColor: PURPLE_COLOR, // 배경 색상 설정
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)), // 모서리를 둥글게
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.location_on, color: Colors.white), // 아이콘 추가
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  locationName,
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20), // 글자 스타일 변경
+                ),
+              ),
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('내용: $content'),
+              Row(
+                children: [
+                  Icon(Icons.text_snippet, color: Colors.white), // 아이콘 추가
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '내용: $content',
+                      style: TextStyle(color: Colors.white, fontSize: 16), // 글자 스타일 변경
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(height: 8),
-              Text('시작 시간: ${_formatTime(startTime)}'),
-              SizedBox(height: 4),
-              Text('종료 시간: ${_formatTime(endTime)}'),
+              Row(
+                children: [
+                  Icon(Icons.access_time, color: Colors.white), // 아이콘 추가
+                  SizedBox(width: 8),
+                  Text(
+                    '시작 시간: ${_formatTime(startTime)}',
+                    style: TextStyle(color: Colors.white, fontSize: 16), // 글자 스타일 변경
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.access_time_filled, color: Colors.white), // 아이콘 추가
+                  SizedBox(width: 8),
+                  Text(
+                    '종료 시간: ${_formatTime(endTime)}',
+                    style: TextStyle(color: Colors.white, fontSize: 16), // 글자 스타일 변경
+                  ),
+                ],
+              ),
             ],
           ),
           actions: [
@@ -139,15 +183,20 @@ class _LocationScreenState extends State<LocationScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
-                  selectedMarker = null; // Reset the selected marker
+                  selectedMarker = null; // 선택된 마커 초기화
                 });
               },
-              child: Text('닫기'),
+              child: Text(
+                '닫기',
+                style: TextStyle(color: Colors.white), // 버튼 글자 색상 설정
+              ),
             ),
           ],
         );
       },
     );
+
+
   }
 
   String _formatTime(int time) {
