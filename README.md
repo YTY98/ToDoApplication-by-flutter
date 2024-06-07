@@ -7,4 +7,4 @@
 🧐 **PATH: schedulemate1/build/app/outputs/apk/release/app-release.apk**
 
 
-👉 Download the app-release.apk from the following path and run it on your tablet or mobile phone
+👉 Download the app-release.apk from the following path and run it on your mobile phone
