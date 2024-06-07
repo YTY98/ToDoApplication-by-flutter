@@ -13,3 +13,4 @@ final paleGreen = Color(0xFF98FB98);
 final peach = Color(0xFFFFDAB9);
 final l2 = Color(0xFFEE82EE);
 final l3 = Color(0xFFFB6F92);
+final PURPLE_COLOR2 = Color(0xff9c8db8);

@@ -122,18 +122,18 @@ class _LocationScreenState extends State<LocationScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: PURPLE_COLOR, // 배경 색상 설정
+          backgroundColor: Colors.white, // 배경 색상 설정
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20.0)), // 모서리를 둥글게
+            borderRadius: BorderRadius.all(Radius.circular(6.0)), // 모서리를 둥글게
           ),
           title: Row(
             children: [
-              Icon(Icons.location_on, color: Colors.white), // 아이콘 추가
+              Icon(Icons.location_on, color: Color(0xff358FEA)), // 아이콘 추가
               SizedBox(width: 8),
               Expanded(
                 child: Text(
                   locationName,
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20), // 글자 스타일 변경
+                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20), // 글자 스타일 변경
                 ),
               ),
             ],
@@ -142,37 +142,38 @@ class _LocationScreenState extends State<LocationScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Row(
                 children: [
-                  Icon(Icons.text_snippet, color: Colors.white), // 아이콘 추가
+                  Icon(Icons.access_time, color: DARK_GREY_COLOR), // 아이콘 추가
+                  SizedBox(width: 8),
+                  Text(
+                    '시작 시간: ${_formatTime(startTime)}',
+                    style: TextStyle(color: DARK_GREY_COLOR, fontSize: 14), // 글자 스타일 변경
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.access_time_filled, color: DARK_GREY_COLOR), // 아이콘 추가
+                  SizedBox(width: 8),
+                  Text(
+                    '종료 시간: ${_formatTime(endTime)}',
+                    style: TextStyle(color: DARK_GREY_COLOR, fontSize: 14), // 글자 스타일 변경
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.text_snippet, color: DARK_GREY_COLOR), // 아이콘 추가
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       '내용: $content',
-                      style: TextStyle(color: Colors.white, fontSize: 16), // 글자 스타일 변경
+                      style: TextStyle(color: DARK_GREY_COLOR, fontSize: 14), // 글자 스타일 변경
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.access_time, color: Colors.white), // 아이콘 추가
-                  SizedBox(width: 8),
-                  Text(
-                    '시작 시간: ${_formatTime(startTime)}',
-                    style: TextStyle(color: Colors.white, fontSize: 16), // 글자 스타일 변경
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.access_time_filled, color: Colors.white), // 아이콘 추가
-                  SizedBox(width: 8),
-                  Text(
-                    '종료 시간: ${_formatTime(endTime)}',
-                    style: TextStyle(color: Colors.white, fontSize: 16), // 글자 스타일 변경
                   ),
                 ],
               ),
@@ -188,7 +189,7 @@ class _LocationScreenState extends State<LocationScreen> {
               },
               child: Text(
                 '닫기',
-                style: TextStyle(color: Colors.white), // 버튼 글자 색상 설정
+                style: TextStyle(color: Colors.black), // 버튼 글자 색상 설정
               ),
             ),
           ],
@@ -232,7 +233,7 @@ class _LocationScreenState extends State<LocationScreen> {
         title: Text(
           "오늘의 일정 장소",
           style: TextStyle(
-            color: PURPLE_COLOR,
+            color: Color(0xff358FEA),
             fontWeight: FontWeight.w700,
           ),
         ),

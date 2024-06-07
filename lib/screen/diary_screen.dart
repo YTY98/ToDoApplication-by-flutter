@@ -135,7 +135,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
               ),
               content: Text(content),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
+                borderRadius: BorderRadius.circular(6.0),
               ),
             ),
           );

@@ -357,7 +357,7 @@ class _LoginPage extends State<LoginPage> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
+                                    backgroundColor: PURPLE_COLOR2,
                                     padding: EdgeInsets.symmetric(vertical: 16.0),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
@@ -378,7 +378,7 @@ class _LoginPage extends State<LoginPage> {
                                   },
                                   style: OutlinedButton.styleFrom(
                                     padding: EdgeInsets.symmetric(vertical: 16.0),
-                                    backgroundColor: Colors.black, // 배경색 검은색으로 변경
+                                    backgroundColor: PURPLE_COLOR2, // 배경색 검은색으로 변경
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
