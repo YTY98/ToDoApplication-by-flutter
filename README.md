@@ -1,16 +1,10 @@
-# schedulemate1
+# 📅 Schedule Mate 📅
 
-A new Flutter project.
+✏️ A Schedule Management Application ✏️
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+🧐 **PATH: schedulemate1/build/app/outputs/apk/release/app-release.apk**
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+👉 Download the app-release.apk from the following path and run it on your tablet or mobile phone
